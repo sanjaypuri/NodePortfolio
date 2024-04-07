@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio Sanjay</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+  <%- include('navbar')%>
+    <h3 class="text-center">Portfolio Sanjay</h3>
+    <div class="container d-flex justify-content-center text-center">
+      <div class="card w-75">
+        <div class="card body bg-dark">
+          <h5 class="card-title text-light mt-2">Total Net Worth</h5>
+          <h3 class="card-subtitle text-light mb-1">
+            <%= (info.netWorth).toFixed(2) %>
+          </h3>
+          <% if(info.dayGain < 0) { %>
+            <% myStyleDay="color:red;" %>
+              <% } else { %>
+                <% myStyleDay="color:green;" %>
+                  <% } %>
+                    <% if(info.totalGain < 0) { %>
+                      <% myStyleTotal="color:red;" %>
+                        <% } else { %>
+                          <% myStyleTotal="color:green;" %>
+                            <% } %>
+                              <div class="pb-3">
+                                <button class="btn btn-warning me-4" style="width:40%;">Day Gain <span
+                                    style=<%=myStyleDay %>><%= (info.dayGain).toFixed(2) %> (<%=
+                                        (info.dayGain*100/info.buyValue).toFixed(2) %>%)</span></button>
+                                <button class="btn btn-warning" style="width:40%;">Total Gain <span
+                                    style=<%=myStyleTotal %>><%= (info.totalGain).toFixed(2) %> (<%=
+                                        (info.totalGain*100/info.buyValue).toFixed(2) %>%)</span></button>
+                              </div>
+        </div>
+      </div>
+    </div>
+    <div class="container text-end">
+      <button type='button' class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#buySharesModal">
+        Buy Shares</button>
+    </div>
+    <div class="container">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Share</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th colspan=2 class="text-center">Day Gain</th>
+            <th colspan=2 class="text-center">Total Gain</th>
+            <th>Market Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% info.portfolio.forEach((item)=> { %>
+            <% if(item.Change < 0) { %>
+              <% myStyleDay="color:red;" %>
+                <% } else { %>
+                  <% myStyleDay="color:green;" %>
+                    <% } %>
+                      <% if(item.GainPercent < 0) { %>
+                        <% myStyleTotal="color:red;" %>
+                          <% } else { %>
+                            <% myStyleTotal="color:green;" %>
+                              <% } %>
+                                <tr>
+                                  <th>
+                                    <%= item.Share %>
+                                  </th>
+                                  <td class="text-end">
+                                    <%= (item.MarketRate).toFixed(2) %>
+                                  </td>
+                                  <td class="text-end">
+                                    <%= item.BuyQty %>
+                                  </td>
+                                  <td class="text-end"><span style=<%=myStyleDay %>><%= (item.Change).toFixed(2) %>
+                                  </td></span>
+                                  <td class="text-end"><span style=<%=myStyleDay %>><%= (item.changepercent).toFixed(2)
+                                        %>%</td></span>
+                                  <td class="text-end"><span style=<%=myStyleTotal %>><%=
+                                        (item.MarketValue-item.BuyValueBrkg).toFixed(2) %>
+                                  </td></span>
+                                  <td class="text-end"><span style=<%=myStyleTotal %>><%= (item.GainPercent).toFixed(2)
+                                        %>%</td></span>
+                                  <td class="text-end">
+                                    <%= (item.MarketValue).toFixed(2) %>
+                                  </td>
+                                </tr>
+                                <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal fade" id="buySharesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add to <%= info.owner %>
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Select the Share to buy</option>
+              <% info.shares.forEach((item)=>{ %>
+                <option value=<%=item.Name %>><%= item.Name %>
+                </option>
+                <% }) %>
+            </select>
+            <div class="row">
+              <div class="col-md-6">
+                <label for="qty" class="form-label">Quantity</label>
+                <input type="text" class="form-control" id="qty" name="qty" value = "">
+              </div>
+              <div class="col-md-6">
+                <label for="date" class="form-label">Purchase Date</label>
+                <input type="date" class="form-control" id="date" name="date" value = "">
+              </div>
+              <div class="col-md-6">
+                <label for="price" class="form-label">Purchase Price</label>
+                <input type="text" class="form-control" id="price" name="price" value = "">
+              </div>
+              <div class="col-md-6">
+                <label for="brokrage" class="form-label">Brokrage</label>
+                <input type="text" class="form-control" id="brokrage" name="brokrage" value = "">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+</body>
+
+</html>
